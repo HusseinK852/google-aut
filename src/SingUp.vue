@@ -267,7 +267,7 @@
         </v-stepper>
       </v-col>
     </v-row>
-    <!-- <v-btn @click="prevStep" class="bg-primary">Next</v-btn> -->
+    <v-btn @click="prevStep" class="bg-primary">Next</v-btn>
   </v-container>
 </template>
 

@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(mongoSanitize());
 
 // CORS
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
