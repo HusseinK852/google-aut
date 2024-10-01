@@ -1,0 +1,104 @@
+[
+  {
+    "id": "26dba51e4f8a01b9",
+    "type": "ui-template",
+    "z": "f6f2187d.f17ca8",
+    "group": "510f2d57dcbbe267",
+    "page": "",
+    "ui": "",
+    "name": "",
+    "order": 1,
+    "width": 0,
+    "height": 0,
+    "head": "",
+    "format": "<template>\n  <v-container fluid class=\"pa-0\">\n    <v-row no-gutters>\n      <v-col cols=\"12\" md=\"6\" v-if=\"page === 'login'\">\n        <v-card\n          color=\"#071438\"\n          class=\"mx-auto pa-12 pb-8 h-100\"\n          elevation=\"8\"\n          rounded=\"0\"\n        >\n          <v-img\n            class=\"mx-auto my-6\"\n            max-width=\"228\"\n            src=\"https://www.dropbox.com/scl/fi/cffh9kt5pa0niuc7ak9zr/enqode_logo.png?rlkey=qnd5pm8s6ufp5hxzilfztmw6c&dl=1\"\n          >\n          </v-img>\n\n          <div class=\"text-subtitle-1 text-light\">Account</div>\n\n          <v-text-field\n            v-model=\"email\"\n            :rules=\"[rules.required, rules.email]\"\n            :error-messages=\"emailErrors\"\n            density=\"compact\"\n            placeholder=\"Email address\"\n            prepend-inner-icon=\"mdi-email-outline\"\n            variant=\"outlined\"\n            class=\"text-light\"\n          ></v-text-field>\n\n          <div\n            class=\"text-subtitle-1 text-light d-flex align-center justify-space-between\"\n          >\n            Password\n            <a\n              class=\"text-caption text-decoration-none text-blue\"\n              href=\"#\"\n              rel=\"noopener noreferrer\"\n              target=\"_blank\"\n            >\n              Forgot Password?\n            </a>\n          </div>\n\n          <v-text-field\n            v-model=\"password\"\n            :append-inner-icon=\"visible ? 'mdi-eye-off' : 'mdi-eye'\"\n            :type=\"visible ? 'text' : 'password'\"\n            density=\"compact\"\n            placeholder=\"Enter your password\"\n            prepend-inner-icon=\"mdi-lock-outline\"\n            variant=\"outlined\"\n            @click:append-inner=\"visible = !visible\"\n            class=\"text-light\"\n          ></v-text-field>\n\n          <v-checkbox\n            v-model=\"rememberMe\"\n            label=\"Remember me\"\n            color=\"blue\"\n            hide-details\n            class=\"mt-2 mb-6 text-light\"\n          >\n          </v-checkbox>\n\n          <v-btn\n            class=\"rounded-xl pa-6\"\n            color=\"purple\"\n            size=\"large\"\n            variant=\"flat\"\n            block\n            @click=\"sendLoginData\"\n          >\n            Log In\n          </v-btn>\n\n          <v-card-actions class=\"d-flex justify-center mt-6\">\n            <span>Don't have an account?</span>\n            <span\n              class=\"cursor-pointer\"\n              style=\"color: purple\"\n              @click=\"page = 'signup'\"\n              >Sign up</span\n            >\n          </v-card-actions>\n        </v-card>\n      </v-col>\n      <v-col cols=\"12\" md=\"6\" v-else>\n        <v-card\n          color=\"#071438\"\n          class=\"mx-auto pa-12 pb-8 h-100\"\n          elevation=\"8\"\n          rounded=\"0\"\n        >\n          <v-img\n            class=\"mx-auto my-6\"\n            max-width=\"228\"\n            src=\"https://www.dropbox.com/scl/fi/cffh9kt5pa0niuc7ak9zr/enqode_logo.png?rlkey=qnd5pm8s6ufp5hxzilfztmw6c&dl=1\"\n          >\n          </v-img>\n\n          <v-stepper\n            v-model=\"this.step\"\n            :items=\"stepperItems\"\n            show-actions\n            style=\"background-color: #071438; color: #fff\"\n            alt-labels\n            :disabled=\"validDisabled\"\n            :hide-actions=\"handleStepChange\"\n          >\n            <!-- Step 1: Create your account -->\n            <template v-slot:item.1>\n              <v-card flat color=\"#071438\" class=\"mx-auto pa-6\" rounded=\"0\">\n                <v-card-subtitle class=\"text-center\">\n                  <v-form ref=\"form\" v-model=\"valid\" lazy-validation>\n                    <v-row>\n                      <v-col cols=\"6\">\n                        <v-text-field\n                          v-model=\"profile.firstName\"\n                          label=\"First name\"\n                          :rules=\"[rules.required]\"\n                          outlined\n                        >\n                        </v-text-field>\n                      </v-col>\n                      <v-col cols=\"6\">\n                        <v-text-field\n                          v-model=\"profile.lastName\"\n                          label=\"Last name\"\n                          :rules=\"[rules.required]\"\n                          outlined\n                        >\n                        </v-text-field>\n                      </v-col>\n                    </v-row>\n\n                    <v-text-field\n                      v-model=\"profile.email\"\n                      label=\"Email address\"\n                      hint=\"Use your work email\"\n                      :rules=\"[rules.required, rules.email]\"\n                      outlined\n                    ></v-text-field>\n\n                    <v-text-field\n                      v-model=\"profile.companyName\"\n                      label=\"Company name\"\n                      :rules=\"[rules.required]\"\n                      outlined\n                    >\n                    </v-text-field>\n\n                    <v-row>\n                      <v-col cols=\"6\">\n                        <v-select\n                          v-model=\"profile.companySize\"\n                          :items=\"companySizes\"\n                          label=\"Company size\"\n                          :rules=\"[rules.required]\"\n                          outlined\n                        ></v-select>\n                      </v-col>\n                      <v-col cols=\"6\">\n                        <v-select\n                          v-model=\"profile.role\"\n                          :items=\"roles\"\n                          label=\"Role\"\n                          :rules=\"[rules.required]\"\n                          outlined\n                        >\n                        </v-select>\n                      </v-col>\n                    </v-row>\n                  </v-form>\n                </v-card-subtitle>\n              </v-card>\n            </template>\n\n            <!-- Step 2: Choose your security challenges -->\n            <template v-slot:item.2>\n              <v-card flat color=\"#071438\" class=\"mx-auto pa-6\" rounded=\"0\">\n                <v-card-subtitle class=\"text-center\">\n                  <v-form ref=\"form\" v-model=\"valid\" lazy-validation>\n                    <v-select\n                      v-model=\"profile.sector\"\n                      :items=\"sectors\"\n                      label=\"Sector\"\n                      :rules=\"[rules.required]\"\n                      outlined\n                    ></v-select>\n\n                    <v-select\n                      v-model=\"profile.securityChallenges\"\n                      :items=\"securityChallenges\"\n                      label=\"Security Challenges\"\n                      :rules=\"[rules.required]\"\n                      outlined\n                      multiple\n                    ></v-select>\n\n                    <v-select\n                      v-model=\"profile.existingSolutions\"\n                      :items=\"existingSolutions\"\n                      label=\"Existing Solutions\"\n                      :rules=\"[rules.required]\"\n                      outlined\n                      multiple\n                    ></v-select>\n\n                    <v-select\n                      v-model=\"profile.annualBudget\"\n                      :items=\"budgetRanges\"\n                      label=\"Annual Budget\"\n                      :rules=\"[rules.required]\"\n                      outlined\n                    ></v-select>\n                  </v-form>\n                </v-card-subtitle>\n              </v-card>\n            </template>\n\n            <!-- Step 3: Authenticate via QR Code -->\n            <template v-slot:item.3>\n              <v-card\n                class=\"mx-auto text-center pa-10\"\n                flat\n                color=\"#071438\"\n                rounded=\"0\"\n              >\n                <v-icon\n                  color=\"teal-darken-2\"\n                  icon=\"mdi-qrcode\"\n                  size=\"large\"\n                ></v-icon>\n                <v-card-title class=\"justify-center mb-5\">\n                  AUTHENTICATE VIA QR CODE\n                </v-card-title>\n                <v-divider />\n                <v-card-subtitle class=\"px-4 text-center my-5 text-subtitle-1\">\n                  Scan the QR code below to authenticate your account.\n                </v-card-subtitle>\n                <v-img src=\"\"></v-img>\n              </v-card>\n            </template>\n          </v-stepper>\n          <v-card-actions class=\"d-flex justify-center mt-6\">\n            <span>Do you already have an account?</span>\n            <span\n              class=\"cursor-pointer\"\n              style=\"color: purple\"\n              @click=\"page = 'login'\"\n              >Log in</span\n            >\n          </v-card-actions>\n        </v-card>\n      </v-col>\n      <v-col cols=\"12\" md=\"6\" class=\"d-none d-md-block pa-0\">\n        <v-img\n          src=\"https://pfst.cf2.poecdn.net/base/image/e21958dcd1ccc0968f070249d115657bcf1f600a24d124074357f5beba5b5aa2?w=1024&h=1024&pmaid=116851828\"\n          cover\n          height=\"100%\"\n        >\n          <div class=\"d-flex align-center justify-center fill-height\">\n            <div class=\"text-h2 font-weight-bold text-center text-white\">\n              Welcome.\n            </div>\n          </div>\n        </v-img>\n      </v-col>\n    </v-row>\n  </v-container>\n</template>\n\n<script>\nexport default {\n  data: () => ({\n    valid: false,\n    visible: false,\n    email: \"\",\n    password: \"\",\n    emailErrors: [],\n    rememberMe: false,\n    page: \"login\",\n    stepperItems: [\n      {\n        title: \"Create your account\",\n        subtitle: \"Enter your personal and company details\",\n      },\n      {\n        title: \"Choose your security challenges\",\n        subtitle: \"Select your sector and security preferences\",\n      },\n      {\n        title: \"Authenticate via QR Code\",\n      },\n    ],\n    step: 1,\n    expirationTime: 0,\n    emailCode: \"\",\n    codeError: false,\n    qrCode: \"\",\n    profile: {\n      firstName: \"\",\n      lastName: \"\",\n      email: \"\",\n      companyName: \"\",\n      companySize: \"\",\n      role: \"\",\n      sector: \"\",\n      securityChallenges: [],\n      existingSolutions: [],\n      annualBudget: \"\",\n    },\n    companySizes: [\"1-10\", \"11-50\", \"51-200\", \"201-500\", \"501-1000\", \"1000+\"],\n    roles: [\"CISO\", \"CIO\", \"CTO\", \"CEO\", \"CFO\", \"COO\", \"Other\"],\n    sectors: [\n      \"Technology\",\n      \"Finance\",\n      \"Healthcare\",\n      \"Manufacturing\",\n      \"Retail\",\n      \"Education\",\n      \"Government\",\n      \"Other\",\n    ],\n    securityChallenges: [\n      \"Data Breaches\",\n      \"Insider Threats\",\n      \"Compliance\",\n      \"Cloud Security\",\n      \"Ransomware\",\n      \"Phishing\",\n      \"IoT Security\",\n      \"Other\",\n    ],\n    existingSolutions: [\n      \"Firewalls\",\n      \"Antivirus\",\n      \"SIEM\",\n      \"DLP\",\n      \"IAM\",\n      \"Encryption\",\n      \"EDR\",\n      \"Other\",\n    ],\n    budgetRanges: [\n      \"$0 - $50,000\",\n      \"$50,001 - $100,000\",\n      \"$100,001 - $500,000\",\n      \"$500,001 - $1,000,000\",\n      \"$1,000,001+\",\n    ],\n    rules: {\n      required: (value) => !!value || \"Required.\",\n      email: (value) => {\n        const pattern =\n          /^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/;\n        return pattern.test(value) || \"Invalid e-mail.\";\n      },\n      passwordStrength: (value) => {\n        const lengthValid = value.length >= 8;\n        const lowercaseValid = /[a-z]/.test(value);\n        const uppercaseValid = /[A-Z]/.test(value);\n        const numberValid = /[0-9]/.test(value);\n        const symbolValid = /[^A-Za-z0-9]/.test(value);\n\n        if (!lengthValid) return \"Password must be at least 8 characters long.\";\n        if (!lowercaseValid) return \"Password must include lowercase letters.\";\n        if (!uppercaseValid) return \"Password must include uppercase letters.\";\n        if (!numberValid) return \"Password must include numbers.\";\n        if (!symbolValid) return \"Password must include symbols.\";\n        return true;\n      },\n    },\n  }),\n  methods: {\n    sendLoginData() {\n      if (this.password && this.email) {\n        this.send({\n          event: \"click\",\n          name: \"login\",\n          payload: {\n            email: this.email,\n            password: this.password,\n          },\n        });\n      }\n    },\n    sendSignUpData() {\n      this.send({\n        event: \"click\",\n        name: \"submitProfile\",\n        payload: {\n          profile: this.profile,\n        },\n      });\n      // this.on(\"QRCODE\", (data) => {\n      //   this.qrCode = data;\n      //   console.log(data);\n      // });\n      // fetch(\"URL_TO_YOUR_NODE_RED_ENDPOINT\")\n      //   .then((response) => response.json())\n      //   .then((data) => {\n      //     this.qrCode = data.qrCode;\n      //   })\n      //   .catch((error) => {\n      //     console.error(\"Error fetching QR code:\", error);\n      //   });\n    },\n    // verifyEmail() {\n    //   this.send(\n    //     {\n    //       event: \"click\",\n    //       name: \"verifyEmail\",\n    //       payload: {\n    //         emailCode: this.emailCode,\n    //       },\n    //     },\n    //     (response) => {\n    //       if (response === \"success\") {\n    //         this.step++;\n    //       }\n    //     }\n    //   );\n    // },\n\n    resetProfileForm() {\n      Object.keys(this.profile).forEach((key) => {\n        if (Array.isArray(this.profile[key])) {\n          this.profile[key] = [];\n        } else {\n          this.profile[key] = \"\";\n        }\n      });\n    },\n  },\n  computed: {\n    formattedExpirationTime() {\n      const minutes = Math.floor(this.expirationTime / 60);\n      const seconds = this.expirationTime % 60;\n      return `${minutes}:${seconds.toString().padStart(2, \"0\")}`;\n    },\n    handleStepChange() {\n      if (this.step >= 3) {\n        if (this.step === 3) {\n          this.sendSignUpData();\n        }\n        return true;\n      }\n    },\n    validDisabled() {\n      if (!this.valid) {\n        if (this.step === 1) {\n          return true;\n        }\n        return \"next\";\n      }\n      return false;\n    },\n  },\n  watch: {\n    async step(newStep) {\n      if (newStep > 1) {\n        const isValid = await this.verifyForm;\n        if (isValid) {\n          this.step--;\n        } else {\n          if (newStep === 3) {\n            this.expirationTime = 300;\n            this.timer = setInterval(() => {\n              if (this.expirationTime > 0) {\n                this.expirationTime--;\n              } else {\n                clearInterval(this.timer);\n                this.timer = null;\n              }\n            }, 1000);\n          } else if (newStep !== 3 && this.timer) {\n            clearInterval(this.timer);\n            this.timer = null;\n          }\n        }\n      }\n    },\n  },\n};\n</script>\n\n<style>\n.text-light {\n  color: #ffffff !important;\n}\n\n.h-100 {\n  height: 100%;\n}\n\n.v-card {\n  border: none;\n}\n</style>\n",
+    "storeOutMessages": true,
+    "passthru": true,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 220,
+    "y": 360,
+    "wires": [["c18fd87d9c4476a2"]]
+  },
+  {
+    "id": "510f2d57dcbbe267",
+    "type": "ui-group",
+    "name": "My Group",
+    "page": "74e58a17987241b4",
+    "width": "12",
+    "height": "1",
+    "order": 1,
+    "showTitle": false,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "74e58a17987241b4",
+    "type": "ui-page",
+    "name": "Page 1",
+    "ui": "45c397769876bf39",
+    "path": "/page1",
+    "icon": "home",
+    "layout": "grid",
+    "theme": "05125fbd235a3a88",
+    "breakpoints": [
+      {
+        "name": "Default",
+        "px": 0,
+        "cols": 3
+      },
+      {
+        "name": "Tablet",
+        "px": 576,
+        "cols": 6
+      },
+      {
+        "name": "Small Desktop",
+        "px": 768,
+        "cols": 9
+      },
+      {
+        "name": "Desktop",
+        "px": 1024,
+        "cols": 12
+      }
+    ],
+    "order": 1,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "45c397769876bf39",
+    "type": "ui-base",
+    "name": "My Dashboard",
+    "path": "/dashboard",
+    "includeClientData": true,
+    "acceptsClientConfig": ["ui-notification", "ui-control"],
+    "showPathInSidebar": false,
+    "showPageTitle": false,
+    "navigationStyle": "default",
+    "titleBarStyle": "hidden"
+  },
+  {
+    "id": "05125fbd235a3a88",
+    "type": "ui-theme",
+    "name": "Default Theme",
+    "colors": {
+      "surface": "#ffffff",
+      "primary": "#0094CE",
+      "bgPage": "#eeeeee",
+      "groupBg": "#ffffff",
+      "groupOutline": "#cccccc"
+    },
+    "sizes": {
+      "density": "default",
+      "pagePadding": "12px",
+      "groupGap": "12px",
+      "groupBorderRadius": "4px",
+      "widgetGap": "12px"
+    }
+  }
+]

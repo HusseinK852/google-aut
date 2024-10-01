@@ -1,14 +1,13 @@
 const { validationResult } = require("express-validator");
-const { authenticator } = require("otplib");
+const { authenticator, totp } = require("otplib");
 const bcrypt = require("bcryptjs");
-const QRCode = require("qrcode");
+const CryptoJS = require("crypto-js");
 const Users = require("../models/UsersModel");
 const VerifyCode = require("../models/VerifyCodeModel");
 const AppError = require("../utils/appError");
 const sendEmail = require("../utils/email");
 
 exports.verifyEmail = async (req, res, next) => {
-  // Validate input
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(new AppError(errors.array()[0].msg, 400));
@@ -47,7 +46,6 @@ Support Team`;
 };
 
 exports.verifyCode = async (req, res, next) => {
-  // Validate input
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(new AppError(errors.array()[0].msg, 400));
@@ -75,7 +73,6 @@ exports.verifyCode = async (req, res, next) => {
 };
 
 exports.generateTOTP = async (req, res, next) => {
-  console.log(req.body.AnnualSecurityBudget);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(new AppError(errors.array()[0].msg, 400));
@@ -101,9 +98,24 @@ exports.generateTOTP = async (req, res, next) => {
     return next(new AppError("Email already exists", 400));
   }
 
+  const hashedPassword = await bcrypt.hash(password, 12);
+
   const secret = authenticator.generateSecret();
 
-  const hashedPassword = await bcrypt.hash(password, 12);
+  console.log("first" + secret);
+
+  const fakeSecret = rotateString(secret, wordToNumber());
+
+  totp.options = { algorithm: "sha512", step: 30 };
+
+  const otpauthURL = totp.keyuri(email, "Enqode", fakeSecret);
+
+  console.log(otpauthURL);
+
+  const hashedSecret = CryptoJS.AES.encrypt(
+    secret,
+    process.env.TOTP_SECRET
+  ).toString();
 
   const newUser = new Users({
     firstName,
@@ -118,22 +130,14 @@ exports.generateTOTP = async (req, res, next) => {
     securityChallenge,
     existingSolutions,
     AnnualSecurityBudget,
-    secret,
+    secret: hashedSecret,
   });
 
   await newUser.save();
 
-  const otpauthURL = authenticator.keyuri(email, "YourAppName", secret);
-
-  QRCode.toDataURL(otpauthURL, (err, data_url) => {
-    if (err) {
-      return next(new AppError("Error generating QR code", 500));
-    }
-
-    res.status(201).json({
-      status: "success",
-      qrCodeUrl: data_url,
-    });
+  res.status(201).json({
+    status: "success",
+    qrCodeUrl: otpauthURL,
   });
 };
 
@@ -164,7 +168,6 @@ exports.login = async (req, res, next) => {
 };
 
 exports.validateTOTP = async (req, res, next) => {
-  // Validate input
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(new AppError(errors.array()[0].msg, 400));
@@ -176,8 +179,14 @@ exports.validateTOTP = async (req, res, next) => {
   if (!user) {
     return next(new AppError("User not found", 404));
   }
-  console.log(user);
-  const isValid = authenticator.check(otp, user.secret);
+
+  const bytes = CryptoJS.AES.decrypt(user.secret, process.env.TOTP_SECRET);
+
+  const secret = bytes.toString(CryptoJS.enc.Utf8);
+
+  console.log(secret, otp);
+
+  const isValid = totp.check(otp, secret);
 
   if (!isValid) {
     return next(new AppError("Invalid OTP", 400));
@@ -187,4 +196,34 @@ exports.validateTOTP = async (req, res, next) => {
     status: "success",
     message: "OTP is valid",
   });
+};
+
+const wordToNumber = () => {
+  const letters = process.env.TOTP_SECRET.toLowerCase().split("");
+  let total = 0;
+
+  for (let letter of letters) {
+    if (letter >= "a" && letter <= "z") {
+      total += letter.charCodeAt(0) - "a".charCodeAt(0) + 1;
+    }
+  }
+
+  while (total >= 10) {
+    total = total
+      .toString()
+      .split("")
+      .reduce((acc, digit) => acc + Number(digit), 0);
+  }
+
+  return total;
+};
+
+const rotateString = (str, steps) => {
+  const length = str.length;
+  const effectiveSteps = steps % length;
+
+  const partToMove = str.slice(0, effectiveSteps);
+  const remainingPart = str.slice(effectiveSteps);
+
+  return remainingPart + partToMove;
 };

@@ -1,23 +1,6 @@
 <template>
   <v-container fluid class="rounded-lg fill-height">
     <v-row no-gutters align="center">
-      <v-col cols="12" md="6" class="d-none d-md-block pa-0">
-        <v-img
-          src="https://pfst.cf2.poecdn.net/base/image/e21958dcd1ccc0968f070249d115657bcf1f600a24d124074357f5beba5b5aa2?w=1024&h=1024&pmaid=116851828"
-          cover
-          height="100%"
-        >
-          <div class="d-flex align-center justify-center fill-height">
-            <v-img
-              class="mx-auto my-6"
-              max-width="280"
-              src="https://www.dropbox.com/scl/fi/cffh9kt5pa0niuc7ak9zr/enqode_logo.png?rlkey=qnd5pm8s6ufp5hxzilfztmw6c&dl=1"
-              contain
-            ></v-img>
-          </div>
-        </v-img>
-      </v-col>
-
       <v-col cols="12" md="6" class="pa-12">
         <v-stepper v-model="step" class="custom-stepper">
           <v-stepper-header>
@@ -50,7 +33,7 @@
                   <v-col cols="6">
                     <v-text-field
                       v-model="firstName"
-                      label="First name *"
+                      label="First name"
                       :rules="[rules.required]"
                       outlined
                     ></v-text-field>
@@ -58,7 +41,7 @@
                   <v-col cols="6">
                     <v-text-field
                       v-model="lastName"
-                      label="Last name *"
+                      label="Last name"
                       :rules="[rules.required]"
                       outlined
                     ></v-text-field>
@@ -66,14 +49,14 @@
                 </v-row>
                 <v-text-field
                   v-model="email"
-                  label="Email address *"
+                  label="Email address"
                   hint="Use your work email"
                   :rules="[rules.required, rules.emailFormat]"
                   outlined
                 ></v-text-field>
                 <v-text-field
                   v-model="password"
-                  label="Password *"
+                  label="Password"
                   :type="showPassword ? 'text' : 'password'"
                   :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                   @click:append-inner="showPassword = !showPassword"
@@ -82,7 +65,7 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="passwordConfirm"
-                  label="Confirm Password *"
+                  label="Confirm Password"
                   :type="showPasswordConfirm ? 'text' : 'password'"
                   :append-inner-icon="
                     showPasswordConfirm ? 'mdi-eye-off' : 'mdi-eye'
@@ -148,7 +131,7 @@
                 <v-text-field
                   v-model="websiteURL"
                   :rules="[rules.required]"
-                  label="Website URL *"
+                  label="Website URL"
                   prepend-inner-icon="mdi-web"
                   append-inner-icon="mdi-check-circle-outline"
                   outlined
@@ -157,7 +140,7 @@
                 <v-text-field
                   v-model="companyName"
                   :rules="[rules.required]"
-                  label="Company Name *"
+                  label="Company Name"
                   prepend-inner-icon="mdi-domain"
                   append-inner-icon="mdi-check-circle-outline"
                   outlined
@@ -266,250 +249,325 @@
           </v-card>
         </v-stepper>
       </v-col>
+      <v-col cols="12" md="6" class="d-none d-md-block pa-0">
+        <v-img
+          src="https://pfst.cf2.poecdn.net/base/image/e21958dcd1ccc0968f070249d115657bcf1f600a24d124074357f5beba5b5aa2?w=1024&h=1024&pmaid=116851828"
+          cover
+          height="100%"
+        >
+          <div class="d-flex align-center justify-center fill-height">
+            <v-img
+              class="mx-auto my-6"
+              max-width="280"
+              src="https://www.dropbox.com/scl/fi/cffh9kt5pa0niuc7ak9zr/enqode_logo.png?rlkey=qnd5pm8s6ufp5hxzilfztmw6c&dl=1"
+              contain
+            ></v-img>
+          </div>
+        </v-img>
+      </v-col>
     </v-row>
-    <v-btn @click="prevStep" class="bg-primary">Next</v-btn>
+    <!-- <v-btn @click="prevStep" class="bg-primary">Next</v-btn> -->
   </v-container>
 </template>
 
-<script lang="ts" setup>
-import { ref, watch, computed, onBeforeUnmount } from "vue";
+<script>
+import QRCode from "qrcode";
 
-const form = ref(null);
-
-const step = ref(0);
-const firstName = ref("");
-const lastName = ref("");
-const email = ref("");
-const password = ref("");
-const showPassword = ref(false);
-const passwordConfirm = ref("");
-const showPasswordConfirm = ref(false);
-//
-const expirationTime = ref(0);
-const emailCode = ref("");
-//
-const websiteURL = ref("");
-const companyName = ref("");
-const companySize = ref("");
-const role = ref("");
-const sector = ref("");
-const securityChallenge = ref("");
-const existingSolutions = ref("");
-const AnnualSecurityBudget = ref("");
-//
-const valid = ref(false);
-const qrCodeUrl = ref("");
-
-const codeError = ref(false);
-
-const timer = ref(null);
-
-const companySizeOptions = [
-  "1-10",
-  "11-50",
-  "51-200",
-  "201-500",
-  "501-1000",
-  "1000+",
-];
-const roleOptions = ["CISO", "CIO", "CTO", "CEO", "CFO", "COO", "Other"];
-const sectorOptions = [
-  "Technology",
-  "Finance",
-  "Healthcare",
-  "Manufacturing",
-  "Retail",
-  "Education",
-  "Government",
-  "Other",
-];
-const securityChallengeOptions = [
-  "Data Breaches",
-  "Insider Threats",
-  "Compliance",
-  "Cloud Security",
-  "Ransomware",
-  "Phishing",
-  "IoT Security",
-  "Other",
-];
-const existingSolutionsOptions = [
-  "Firewalls",
-  "Antivirus",
-  "SIEM",
-  "DLP",
-  "IAM",
-  "Encryption",
-  "EDR",
-  "Other",
-];
-const AnnualSecurityBudgetOptions = [
-  "$0 - $50,000",
-  "$50,001 - $100,000",
-  "$100,001 - $500,000",
-  "$500,001 - $1,000,000",
-  "$1,000,001+",
-];
-
-const rules = {
-  required: (value: string) => !!value || "This field is required.",
-  passwordMatch: (value: string) =>
-    value === password.value || "Passwords do not match.",
-  emailFormat: (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(value) || "Invalid email format.";
+export default {
+  data() {
+    return {
+      form: null,
+      step: 0,
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      showPassword: false,
+      passwordConfirm: "",
+      showPasswordConfirm: false,
+      expirationTime: 0,
+      emailCode: "",
+      websiteURL: "",
+      companyName: "",
+      companySize: "",
+      role: "",
+      sector: "",
+      securityChallenge: "",
+      existingSolutions: "",
+      AnnualSecurityBudget: "",
+      valid: false,
+      qrCodeUrl: "",
+      codeError: false,
+      timer: null,
+      companySizeOptions: [
+        "1-10",
+        "11-50",
+        "51-200",
+        "201-500",
+        "501-1000",
+        "1000+",
+      ],
+      roleOptions: ["CISO", "CIO", "CTO", "CEO", "CFO", "COO", "Other"],
+      sectorOptions: [
+        "Technology",
+        "Finance",
+        "Healthcare",
+        "Manufacturing",
+        "Retail",
+        "Education",
+        "Government",
+        "Other",
+      ],
+      securityChallengeOptions: [
+        "Data Breaches",
+        "Insider Threats",
+        "Compliance",
+        "Cloud Security",
+        "Ransomware",
+        "Phishing",
+        "IoT Security",
+        "Other",
+      ],
+      existingSolutionsOptions: [
+        "Firewalls",
+        "Antivirus",
+        "SIEM",
+        "DLP",
+        "IAM",
+        "Encryption",
+        "EDR",
+        "Other",
+      ],
+      AnnualSecurityBudgetOptions: [
+        "$0 - $50,000",
+        "$50,001 - $100,000",
+        "$100,001 - $500,000",
+        "$500,001 - $1,000,000",
+        "$1,000,001+",
+      ],
+    };
   },
-  passwordStrength: (value: string) => {
-    const lengthValid = value.length >= 8;
-    const lowercaseValid = /[a-z]/.test(value);
-    const uppercaseValid = /[A-Z]/.test(value);
-    const numberValid = /[0-9]/.test(value);
-    const symbolValid = /[^A-Za-z0-9]/.test(value);
-
-    if (!lengthValid) return "Password must be at least 8 characters long.";
-    if (!lowercaseValid) return "Password must include lowercase letters.";
-    if (!uppercaseValid) return "Password must include uppercase letters.";
-    if (!numberValid) return "Password must include numbers.";
-    if (!symbolValid) return "Password must include symbols.";
-    return true;
-  },
-};
-
-const formattedExpirationTime = computed(() => {
-  const minutes = Math.floor(expirationTime.value / 60);
-  const seconds = expirationTime.value % 60;
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-});
-
-watch(step, (newStep, oldStep) => {
-  if (newStep === 1) {
-    expirationTime.value = 300;
-    timer.value = setInterval(() => {
-      if (expirationTime.value > 0) {
-        expirationTime.value--;
-      } else {
-        clearInterval(timer.value);
-        timer.value = null;
-      }
-    }, 1000);
-  } else {
-    if (timer.value) {
-      clearInterval(timer.value);
-      timer.value = null;
-    }
-  }
-});
-
-onBeforeUnmount(() => {
-  if (timer.value) {
-    clearInterval(timer.value);
-  }
-});
-
-const firstStep = async () => {
-  const check = await form.value.validate();
-  if (check.valid) {
-    try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/auth/sign-up/verify-email",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email.value,
-          }),
+  methods: {
+    async firstStep() {
+      const check = await this.$refs.form.validate();
+      if (check) {
+        try {
+          const response = await fetch(
+            "http://localhost:8000/api/v1/auth/sign-up/verify-email",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: this.email,
+              }),
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          this.step += 1;
+        } catch (e) {
+          console.error("Error during first step:", e);
         }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      step.value += 1;
-    } catch (e) {
-      console.error("Error during first step:", e);
-    }
-  }
-};
+    },
+    async verifyCode() {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/v1/auth/verify-code",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: this.email,
+              verificationCode: this.emailCode,
+            }),
+          }
+        );
+        if (!response.ok) {
+          this.codeError = true;
+          this.emailCode = "";
+          return;
+        }
+        this.codeError = false;
+        this.step += 1;
+      } catch (e) {
+        console.error("Error during verify code:", e);
+        this.codeError = true;
+      }
+    },
+    async nextStep() {
+      const check = await this.$refs.form.validate();
+      if (check) {
+        this.step += 1;
+      }
+    },
+    prevStep() {
+      this.step -= 1;
+    },
+    async handleSignUp() {
+      const check = await this.$refs.form.validate();
+      if (check) {
+        try {
+          const response = await fetch(
+            "http://localhost:8000/api/v1/auth/sign-up",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                firstName: this.firstName,
+                lastName: this.lastName,
+                email: this.email,
+                password: this.password,
+                websiteURL: this.websiteURL,
+                companyName: this.companyName,
+                companySize: this.companySize,
+                role: this.role,
+                sector: this.sector,
+                securityChallenge: this.securityChallenge,
+                existingSolutions: this.existingSolutions,
+                AnnualSecurityBudget: this.AnnualSecurityBudget,
+              }),
+            }
+          );
 
-const verifyCode = async () => {
-  try {
-    const response = await fetch(
-      "http://localhost:8000/api/v1/auth/verify-code",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          const secretRegex = /secret=([A-Z0-9]+)/;
+          const match = data.qrCodeUrl.match(secretRegex);
+
+          if (match && match[1]) {
+            const originalSecret = match[1];
+            console.log("Extracted secret:", originalSecret);
+
+            const newSecret = this.reverseRotateString(
+              originalSecret,
+              this.wordToNumber("NoMoreExcuses")
+            );
+
+            const updatedUrl = data.qrCodeUrl.replace(
+              secretRegex,
+              `secret=${newSecret}`
+            );
+
+            console.log("Updated QR code URL with new secret:", updatedUrl);
+
+            QRCode.toDataURL(updatedUrl, { errorCorrectionLevel: "H" })
+              .then((url) => {
+                this.qrCodeUrl = url;
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+
+            this.step += 1;
+          } else {
+            console.error("No secret found in qrCodeUrl.");
+          }
+        } catch (error) {
+          console.error("Error during signup:", error);
+        }
+      }
+    },
+    wordToNumber(word) {
+      const letters = word.toLowerCase().split("");
+      let total = 0;
+
+      for (let letter of letters) {
+        if (letter >= "a" && letter <= "z") {
+          total += letter.charCodeAt(0) - "a".charCodeAt(0) + 1;
+        }
+      }
+
+      while (total >= 10) {
+        total = total
+          .toString()
+          .split("")
+          .reduce((acc, digit) => acc + Number(digit), 0);
+      }
+
+      return total;
+    },
+    reverseRotateString(str, steps) {
+      const length = str.length;
+      const effectiveSteps = steps % length;
+
+      const partToMove = str.slice(-effectiveSteps);
+      const remainingPart = str.slice(0, length - effectiveSteps);
+
+      return partToMove + remainingPart;
+    },
+  },
+  computed: {
+    rules() {
+      return {
+        required: (value) => !!value || "This field is required.",
+        passwordMatch: (value) =>
+          value === this.password || "Passwords do not match.",
+        emailFormat: (value) => {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return emailRegex.test(value) || "Invalid email format.";
         },
-        body: JSON.stringify({
-          email: email.value,
-          verificationCode: emailCode.value,
-        }),
-      }
-    );
-    if (!response.ok) {
-      codeError.value = true;
-      emailCode.value = "";
-      return;
-    }
-    codeError.value = false;
-    step.value += 1;
-  } catch (e) {
-    console.error("Error during verify code:", e);
-    codeError.value = true;
-  }
-};
+        passwordStrength: (value) => {
+          const lengthValid = value.length >= 8;
+          const lowercaseValid = /[a-z]/.test(value);
+          const uppercaseValid = /[A-Z]/.test(value);
+          const numberValid = /[0-9]/.test(value);
+          const symbolValid = /[^A-Za-z0-9]/.test(value);
 
-const nextStep = async () => {
-  const check = await form.value.validate();
-  if (check.valid) {
-    step.value += 1;
-  }
-};
-
-const prevStep = () => {
-  step.value += 1;
-};
-
-const handleSignUp = async () => {
-  const check = await form.value.validate();
-  if (check.valid) {
-    try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/auth/sign-up",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: firstName.value,
-            lastName: lastName.value,
-            email: email.value,
-            password: password.value,
-            websiteURL: websiteURL.value,
-            companyName: companyName.value,
-            companySize: companySize.value,
-            role: role.value,
-            sector: sector.value,
-            securityChallenge: securityChallenge.value,
-            existingSolutions: existingSolutions.value,
-            AnnualSecurityBudget: AnnualSecurityBudget.value,
-          }),
+          if (!lengthValid)
+            return "Password must be at least 8 characters long.";
+          if (!lowercaseValid)
+            return "Password must include lowercase letters.";
+          if (!uppercaseValid)
+            return "Password must include uppercase letters.";
+          if (!numberValid) return "Password must include numbers.";
+          if (!symbolValid) return "Password must include symbols.";
+          return true;
+        },
+      };
+    },
+    formattedExpirationTime() {
+      const minutes = Math.floor(this.expirationTime / 60);
+      const seconds = this.expirationTime % 60;
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    },
+  },
+  watch: {
+    step(newStep, oldStep) {
+      if (newStep === 1) {
+        this.expirationTime = 300;
+        this.timer = setInterval(() => {
+          if (this.expirationTime > 0) {
+            this.expirationTime--;
+          } else {
+            clearInterval(this.timer);
+            this.timer = null;
+          }
+        }, 1000);
+      } else {
+        if (this.timer) {
+          clearInterval(this.timer);
+          this.timer = null;
         }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      const data = await response.json();
-      qrCodeUrl.value = data.qrCodeUrl;
-      step.value += 1;
-    } catch (error) {
-      console.error("Error during signup:", error);
+    },
+  },
+  beforeUnmount() {
+    if (this.timer) {
+      clearInterval(this.timer);
     }
-  }
+  },
 };
 </script>
 
@@ -532,3 +590,43 @@ const handleSignUp = async () => {
   margin: auto;
 }
 </style>
+<v-row>
+  <v-col cols="6">
+    <v-select
+      v-model="profile.sector"
+      :items="sectors"
+      label="Sector"
+      :rules="[rules.required]"
+      outlined
+    ></v-select>
+  </v-col>
+  <v-col cols="6">
+    <v-select
+      v-model="profile.securityChallenges"
+      :items="securityChallenges"
+      label="Security Challenges"
+      :rules="[rules.required]"
+      outlined
+    ></v-select>
+  </v-col>
+</v-row>
+<v-row>
+  <v-col cols="6">
+    <v-select
+      v-model="profile.existingSolutions"
+      :items="existingSolutions"
+      label="Existing Solutions"
+      :rules="[rules.required]"
+      outlined
+    ></v-select>
+  </v-col>
+  <v-col cols="6">
+    <v-select
+      v-model="profile.annualBudget"
+      :items="budgetRanges"
+      label="Annual Budget"
+      :rules="[rules.required]"
+      outlined
+    ></v-select>
+  </v-col>
+</v-row>

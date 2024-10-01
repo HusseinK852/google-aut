@@ -1,0 +1,91 @@
+7dbfba803b19387f359117eea09f6f4a
+
+const cookies = [
+    {
+      name: "ACCOUNT_CHOOSER",
+      value:
+        "AFx_qI608jHHV6iZIFgoKk72Tt7whyXUR4dqO4l8TvIe-LrtvN_UuSqDOYXAzGTp25zdbLIJeZccOjCztlsL2dMfy6XDcWxkBjuT21ZOgPSEIgGDBuxMHC4uQ1dWMwfQfciuZtYNUeqLVSR9_NhPWzKb3ygHkExJzy5ADRk8pSpais5AS-ysOrM5gYVt9JsoplE7iY-acIdxu4Unu2aRBbIKJ-SU7x-SH6sov37JQPe4zxlPFcpJ1BG7uBvziiR6gNbtA53yANZsghLPxvJoeGRA5mGvXOO5gp3b7Gp1eUOTHrYPogWGr_UeS4srvfNHdBEFhJJ5EIoy3Sc7wThpDWHtwNvORf0Uelq6i0Q3UNWdN3lry9EN-PGKGcFNmSoBv_5XoLQviC21",
+      domain: ".accounts.google.com",
+      path: "/",
+    },
+    {
+      name: "AEC",
+      value: "AVYB7cqiWsKF9XnoMXaIOhKvGFf8qRvjYS3sKDaarlwrLssuAMYcxP_Odg",
+      domain: ".google.com",
+      path: "/",
+    },
+    {
+      name: "APISID",
+      value: "ydef_Z6V_VdEdyJe/AB0fuMUcUl9K42mJE",
+      domain: ".google.com",
+      path: "/",
+    },
+    {
+      name: "HSID",
+      value: "ADpdzwbI3MabQ20_u",
+      domain: ".google.com",
+      path: "/",
+    },
+    {
+      name: "LSID",
+      value:
+        "o.admin.google.com|o.calendar.google.com|o.chat.google.com|o.chromewebstore.google.com|o.console.cloud.google.com|o.console.firebase.google.com|o.drive.google.com|o.gds.google.com|o.jamboard.google.com|o.lens.google.com|o.mail.google.com|o.meet.google.com|o.myaccount.google.com|o.myactivity.google.com|o.passwords.google.com|o.play.google.com|s.IL|s.youtube:g.a000oQjv7wuDYr0EbwqiydbpodW864ALRVLdWvhFP75AoQAHTduErqbes0rdWJkdVyOgBpjhNgACgYKASYSARcSFQHGX2MitbMzcHmfKg6EQPElJV_dphoVAUF8yKp5LK1yy_jq_WeE20j0RcZe0076",
+      domain: "accounts.google.com",
+      path: "/",
+    },
+    {
+      name: "LSOLH",
+      value:
+        "|||_SVI_EPmV1sHE6IgDGAMiP01BRURIZl9xWjJEWXhTVW5lUkY3eW10LVpaSXhsYUJTclU5RUxsNFB0NzJlSUViclo2QndGVzFtWDRzbzh6Zw_:|||28793782:fddb",
+      domain: "accounts.google.com",
+      path: "/",
+    },
+    {
+      name: "NID",
+      value:
+        "518=vIlidwRVlXi-9MUeqvNRUJuC4DgGIuN-ukpcTw96N1XDtTtw4QrXtrOVCMX21PFsr_A_G8hBEI5H0Nwvc_4n6UBTU0DdC5lBKZ_6PKRXYfTjto2TPNcrMjCRQWZH6kHff_IUnF_9MzuW-mjCGGLb4CucUcnQ2RXfQ7QRYDdWGVkK-7piR_pf3aMoFaXk6p-_EE3qVJk0mNm6mGFu1YvuUr6zK48g-xHbi6a9RITuiim2-eCNNUJdFA_HBrcRh_sT0XxTvSB-CIAhmJB8Cf_l6_MiCP2WiWTZz4YQtWpE52sOtAoAP1PsXl_qrXLypv9z2xiErFIL9nKoKubxntgy5wU-fxXZ6rOl0OEP8j49lTNdlotubTHf4k6KZgANAiclBL4h47TlV7ZdmwD6tLNN5bHqtpmm8W0XKUOHr5BZAyMwzD3KaBmoEG2ZJb02njr87O9D0GOnKcluuQIY6nRAxLmF-WhvAjGNe9-jX4itG-rzbngAlPYpSANCtuZ4G256bs3XiHSdjAnKcdwPNYTQnmS2mV3gONNlcsGz-rqWVM1SiMfADJM2QwyYb3S7zfBSFm3Cbnwum2tRw_L9LAws0VcPP4lTtKb0HR9zsgDiA9NFvqbct4PZiH5lS2pUPljP0gUGZOpFFOcW99k5bHnSq1wM26JVwcjs4D7BHZ7Yn6F8ySVsm_6U4EtkzR10F3AnNNFItc7eoJwvd1ITW9LtyVg6yBxVyaN9Farkzbob6Z9CAvwF5nq6-L9fjO5n_Qyqw9yCAtduuf4BY357r3WWarV7N_1ygi861Ga0zAp_4aIpv8lXwL9nj7z11VKNr_oWosWGVWGAmL0FsBBqEAmmlWYPnCUHhnYyaA",
+      domain: ".google.com",
+      path: "/",
+    },
+    {
+      name: "OTZ",
+      value: "7728876_44_48_120840_44_319500",
+      domain: "accounts.google.com",
+      path: "/",
+    },
+    {
+      name: "OptanonConsent",
+      value:
+        "isGpcEnabled=0&datestamp=Tue+Oct+01+2024+11%3A38%3A14+GMT%2B0300+(Eastern+European+Summer+Time)&version=202304.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&landingPath=https%3A%2F%2Fwww.crunchbase.com%2Forganization%2Fpaypal&groups=C0001%3A1%2CC0002%3A1%2CC0003%3A1%2CC0004%3A1",
+      domain: ".crunchbase.com",
+      path: "/",
+    },
+    {
+      name: "SAPISID",
+      value: "OBGu_BomjUSSQPIh/AgelWb2PcoGzqdFRK",
+      domain: ".google.com",
+      path: "/",
+    },
+    {
+      name: "SEARCH_SAMESITE",
+      value: "CgQIhpwB",
+      domain: ".google.com",
+      path: "/",
+    },
+    {
+      name: "SID",
+      value:
+        "g.a000oQjv73QuuihrKDxncAivuHk0MbsHS721bCuwxEYNEQN1XL0tILkk8_9IX0rGFqaRVH6muwACgYKAdsSARcSFQHGX2MiXFM8u_AwSjiQ5vcJejEOiRoVAUF8yKofU6SNaFU4NNbfciDfXi4M0076",
+      domain: ".google.com",
+      path: "/",
+    },
+    {
+      name: "SIDCC",
+      value:
+        "AKEyXzVum4fcAHdbwHn6Rn-2_y_xnX_1nBXHwVnu-oo3j1R8unIgQ5gUWSSN_RDm7Sr9JsLuUR8z",
+      domain: ".google.com",
+      path: "/",
+    },
+  ];
+
+  await page.setCookie(...cookies);

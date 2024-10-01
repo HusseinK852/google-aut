@@ -56,7 +56,7 @@
               label="Password *"
               :type="showPassword ? 'text' : 'password'"
               :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-              @click:append-inner="showPassword = !showPassword"
+              @click:append-inner="toggleShowPassword"
               :rules="[rules.required, rules.passwordStrength]"
               placeholder="Password"
               outlined
@@ -141,93 +141,102 @@
   </v-container>
 </template>
 
-<script setup lang="ts">
-import { ref } from "vue";
-
-const valid = ref(false);
-
-const showPassword = ref(false);
-const email = ref("");
-const password = ref("");
-const emailErrors = ref<string[]>([]);
-const showQRCode = ref(false);
-const otpCode = ref("");
-const otpValidMessage = ref("");
-
-const rules = {
-  required: (value: string) => !!value || "Required.",
-  email: (value: string) => {
-    const pattern =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return pattern.test(value);
-  },
-  passwordStrength: (value: string) => {
-    const lengthValid = value.length >= 8;
-    const lowercaseValid = /[a-z]/.test(value);
-    const uppercaseValid = /[A-Z]/.test(value);
-    const numberValid = /[0-9]/.test(value);
-    const symbolValid = /[^A-Za-z0-9]/.test(value);
-
-    if (!lengthValid) return "Password must be at least 8 characters long.";
-    if (!lowercaseValid) return "Password must include lowercase letters.";
-    if (!uppercaseValid) return "Password must include uppercase letters.";
-    if (!numberValid) return "Password must include numbers.";
-    if (!symbolValid) return "Password must include symbols.";
-    return true;
-  },
-};
-
-const sendLoginData = async () => {
-  if (valid) {
-    try {
-      const response = await fetch("http://localhost:8000/api/v1/auth/log-in", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+<script>
+export default {
+  data() {
+    return {
+      valid: false,
+      showPassword: false,
+      email: "",
+      password: "",
+      emailErrors: [],
+      showQRCode: false,
+      otpCode: "",
+      otpValidMessage: "",
+      rules: {
+        required: (value) => !!value || "Required.",
+        email: (value) => {
+          const pattern =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return pattern.test(value);
         },
-        body: JSON.stringify({
-          email: email.value,
-          password: password.value,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(`error`);
-      }
-      showQRCode.value = true;
-    } catch (e) {
-      console.error("Error login:", e);
-    }
-  }
-};
+        passwordStrength: (value) => {
+          const lengthValid = value.length >= 8;
+          const lowercaseValid = /[a-z]/.test(value);
+          const uppercaseValid = /[A-Z]/.test(value);
+          const numberValid = /[0-9]/.test(value);
+          const symbolValid = /[^A-Za-z0-9]/.test(value);
 
-const validateOTP = async () => {
-  try {
-    const response = await fetch(
-      "http://localhost:8000/api/v1/auth/validate-totp",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+          if (!lengthValid)
+            return "Password must be at least 8 characters long.";
+          if (!lowercaseValid)
+            return "Password must include lowercase letters.";
+          if (!uppercaseValid)
+            return "Password must include uppercase letters.";
+          if (!numberValid) return "Password must include numbers.";
+          if (!symbolValid) return "Password must include symbols.";
+          return true;
         },
-        body: JSON.stringify({
-          email: email.value,
-          otp: otpCode.value,
-        }),
+      },
+    };
+  },
+  methods: {
+    toggleShowPassword() {
+      this.showPassword = !this.showPassword;
+    },
+    async sendLoginData() {
+      if (this.valid) {
+        try {
+          const response = await fetch(
+            "http://localhost:8000/api/v1/auth/log-in",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: this.email,
+                password: this.password,
+              }),
+            }
+          );
+          if (!response.ok) {
+            throw new Error("error");
+          }
+          this.showQRCode = true;
+        } catch (e) {
+          console.error("Error login:", e);
+        }
       }
-    );
+    },
+    async validateOTP() {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/v1/auth/validate-totp",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: this.email,
+              otp: this.otpCode,
+            }),
+          }
+        );
 
-    const data = await response.json();
-    otpValidMessage.value = data.message;
-    console.log(data);
-    if (data.status === "success") {
-      otpCode.value = "";
-      ///location.reload();
-    } else {
-      otpValidMessage.value = "Invalid OTP Code.";
-    }
-  } catch (error) {
-    console.error("Error validating OTP:", error);
-  }
+        const data = await response.json();
+        this.otpValidMessage = data.message;
+        if (data.status === "success") {
+          this.otpCode = "";
+        } else {
+          this.otpValidMessage = "Invalid OTP Code.";
+        }
+      } catch (error) {
+        console.error("Error validating OTP:", error);
+      }
+    },
+  },
 };
 </script>
 
